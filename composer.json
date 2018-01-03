@@ -1,0 +1,18 @@
+{
+    "name": "yidas/codeigniter-rest",
+    "description": "CodeIgniter 3 Base Controller for API implement",
+    "keywords": ["codeIgniter", "api", "controller", "authorization"],
+    "homepage": "https://github.com/yidas/codeigniter-api-controller",
+    "type": "library",
+    "license": "BSD-3-Clause",
+    "support": {
+        "issues": "https://github.com/yidas/codeigniter-api-controller/issues",
+        "source": "https://github.com/yidas/codeigniter-api-controller"
+    },
+    "minimum-stability": "stable",
+    "autoload": {
+        "psr-4": {
+            "yidas\\": "src/"
+        }
+    }
+}
