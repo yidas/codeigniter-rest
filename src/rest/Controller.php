@@ -136,20 +136,21 @@ class Controller extends \CI_Controller
      * 
      * @param int Callback status code
      * @param string Callback status text
-     * @param array|mixed Callback data body
+     * @param array|mixed|bool Callback data body, false will remove body key 
      * @return array Formated array data
      */
-    protected function format($statusCode=null, $statusText=null, $body=null)
+    protected function format($statusCode=null, $statusText=null, $body=false)
     {
         $format = [];
         // Status Code
-        $format[$this->responseFormat['status_code']] = ($statusCode) ?: $this->response->getStatusCode();
+        $format[$this->responseFormat['status_code']] = ($statusCode) 
+            ?: $this->response->getStatusCode();
         // Status Text
         if ($statusText) {
             $format[$this->responseFormat['status_text']] = $statusText;
         }
         // Body
-        if ($body) {
+        if ($body !== false) {
             $format[$this->responseFormat['body']] = $body;
         }
         
