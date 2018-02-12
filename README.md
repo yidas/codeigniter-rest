@@ -58,8 +58,14 @@ public function update($resourceID, $requestData=null) {
 
     $this->db->where('id', $resourceID)
         ->update('table', $requestData);
-    return $this->json(null, true);
+    return $this->json(false, true);
 }
+```
+
+Output:
+
+```json
+{"code":200}
 ```
 
 ---
