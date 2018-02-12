@@ -58,8 +58,14 @@ public function update($resourceID, $requestData=null) {
 
     $this->db->where('id', $resourceID)
         ->update('table', $requestData);
-    return $this->json(null, true);
+    return $this->json(false, true);
 }
+```
+
+Output:
+
+```json
+{"code":200}
 ```
 
 ---
@@ -122,20 +128,21 @@ The base RESTful API controller is `yidas\rest\Controller`, the following table 
 |GET        |/photos/{photo}|show     |Retrieve an addressed member of the collection.|
 |PUT/PATCH  |/photos/{photo}|update   |Update the addressed member of the collection. |
 |DELETE     |/photos/{photo}|delete   |Delete the addressed member of the collection. |
-|DELETE     |/photos        |deleteAll|Delete the entire collection.                  |
+|DELETE     |/photos        |delete   |Delete the entire collection.                  |
 
 
 ### Overrided Methods:
+
+You could make a resource controller by referring the [Template of Resource Controller](https://github.com/yidas/codeigniter-rest/blob/dev/examples/RestController.php).
 
 The following methods with arguments could be overrided when you need to defind response and open it:
 
 ```php
 public function index() {}
-public function store($requestData=null) {}
-public function show($resourceID) {}
-public function update($resourceID, $requestData=null) {}
-public function delete($resourceID) {}
-public function deleteAll() {}
+protected function store($requestData=null) {}
+protected function show($resourceID) {}
+protected function update($resourceID, $requestData=null) {}
+protected function delete($resourceID=null) {}
 ```
 
 > `$requestData` is the raw body from request

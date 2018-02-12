@@ -9,7 +9,9 @@ use yidas\http\Response;
  * RESTful API Controller
  * 
  * @author  Nick Tsai <myintaer@gmail.com>
- * @version 1.0.1
+ * @version 1.1.0
+ * @link    https://github.com/yidas/codeigniter-rest/
+ * @see     https://github.com/yidas/codeigniter-rest/blob/master/examples/RestController.php
  * 
  * Controller extending:
  * ```php
@@ -25,11 +27,6 @@ use yidas\http\Response;
 class Controller extends \CI_Controller
 {
     /**
-     * @var bool Close the default actions without implement
-     */
-    const CLOSE_DEFAULT_ACTIONS = true;
-
-    /**
      * @var array Standard format
      */
     protected $responseFormat = [
@@ -39,9 +36,37 @@ class Controller extends \CI_Controller
     ];
 
     /**
+     * RESTful API resource routes
+     * 
+     * public function index() {}
+     * protected function store($requestData=null) {}
+     * protected function show($resourceID) {}
+     * protected function update($resourceID, $requestData=null) {}
+     * protected function delete($resourceID=null) {}
+     * 
+     * @var array RESTful API table of routes & actions
+     */
+    protected $routes = [
+        'index' => 'index',
+        'store' => 'store',
+        'show' => 'show',
+        'update' => 'update',
+        'delete' => 'delete',
+    ];
+
+    /**
+     * Pre-setting format
+     * 
      * @var string yidas\http\Response format
      */
     protected $format;
+
+    /**
+     * Body Format usage switch
+     * 
+     * @var bool Default $bodyFormat for json()
+     */
+    protected $bodyFormat = false;
 
     /**
      * @var object yidas\http\Request;
@@ -81,31 +106,39 @@ class Controller extends \CI_Controller
         switch ($this->request->getMethod()) {
             case 'POST':
                 if (!$resourceID) {
-                    $this->store($this->request->getRawBody());
+                    return $this->_action(['delete', $this->request->getBodyParams()]);
                 }
                 break;
             case 'PUT':
             case 'PATCH':
                 if ($resourceID) {
-                    $this->update($this->request->getRawBody(), $resourceID);
+                    return $this->_action(['update', $resourceID, $this->request->getBodyParams()]);
                 }
                 break;
             case 'DELETE':
                 if ($resourceID) {
-                    $this->delete($resourceID);
+                    return $this->_action(['delete', $resourceID]);
                 } else {
-                    $this->deleteAll();
+                    return $this->_action(['delete']);
                 }
                 break;
             case 'GET':
             default:
                 if ($resourceID) {
-                    $this->show($resourceID);
+                    return $this->_action(['show', $resourceID]);
                 } else {
-                    $this->index();
+                    return $this->_action(['index']);
                 }
                 break;
         }
+    }
+
+    /**
+     * Alias of route()
+     */
+    public function ajax($resourceID=NULL)
+    {
+        return $this->route($resourceID);
     }
 
     /**
@@ -117,13 +150,16 @@ class Controller extends \CI_Controller
      * @param string Callback status text
      * @return string Response body data
      */
-    protected function json($data, $bodyFormat=false, $statusCode=null, $statusText=null)
+    protected function json($data, $bodyFormat=null, $statusCode=null, $statusText=null)
     {
         $this->response->setFormat(Response::FORMAT_JSON);
+
+        // Check default Body Format setting if not assigning
+        $bodyFormat = ($bodyFormat!==null) ? $bodyFormat : $this->bodyFormat;
         
         if ($bodyFormat) {
             // Pack data
-            $data = $this->format($statusCode, $statusText, $data);
+            $data = $this->_format($statusCode, $statusText, $data);
         }
         
         return $this->response
@@ -139,7 +175,7 @@ class Controller extends \CI_Controller
      * @param array|mixed|bool Callback data body, false will remove body key 
      * @return array Formated array data
      */
-    protected function format($statusCode=null, $statusText=null, $body=false)
+    protected function _format($statusCode=null, $statusText=null, $body=false)
     {
         $format = [];
         // Status Code
@@ -160,72 +196,37 @@ class Controller extends \CI_Controller
     /**
      * Default Action
      */
-    private function _defaultAction()
+    protected function _defaultAction()
     {
         /* Response sample code */
         // $response->data = ['foo'=>'bar'];
 		// $response->setStatusCode(401);
         
-        if (static::CLOSE_DEFAULT_ACTIONS) {
-            // Codeigniter 404 Error Handling
-            show_404();
+        // Codeigniter 404 Error Handling
+        show_404();
+    }
+
+    /**
+     * Action processor for route
+     * 
+     * @param array Elements contains method for first and params for others 
+     */
+    private function _action($params)
+    {
+        // Shift and get the method
+        $method = array_shift($params);
+
+        if (!isset($this->routes[$method])) {
+            $this->_defaultAction();
         }
-    }
 
-    /**
-     * Action: Index
-     */
-    public function index()
-    {
-        $this->_defaultAction();
-    }
+        // Get corresponding method name
+        $method = $this->routes[$method];
 
-    /**
-     * Action: Store
-     * 
-     * @param array $requestData
-     */
-    public function store($requestData=null)
-    {
-        $this->_defaultAction();
-    }
+        if (!method_exists($this, $method)) {
+            $this->_defaultAction();
+        }
 
-    /**
-     * Action: Show
-     * 
-     * @param int|string $resourceID
-     */
-    public function show($resourceID)
-    {
-        $this->_defaultAction();
-    }
-
-    /**
-     * Action: Update
-     * 
-     * @param int|string $resourceID
-     * @param array $requestData
-     */
-    public function update($resourceID, $requestData=null)
-    {
-        $this->_defaultAction();
-    }
-
-    /**
-     * Action: Delete
-     * 
-     * @param int|string $resourceID
-     */
-    public function delete($resourceID)
-    {
-        $this->_defaultAction();
-    }
-
-    /**
-     * Action: Delete All
-     */
-    public function deleteAll()
-    {
-        $this->_defaultAction();
+        return call_user_func_array([$this, $method], $params);
     }
 }

@@ -6,7 +6,7 @@ namespace yidas\http;
  * Request Component
  * 
  * @author  Nick Tsai <myintaer@gmail.com>
- * @since   0.1.0
+ * @since   1.1.0
  * @todo    Psr\Http\Message\RequestInterface
  */
 class Request
@@ -45,11 +45,28 @@ class Request
     }
 
     /**
+     * Returns the request parameters given in the request body.
+     *
+     * Request parameters are determined using the parsers configured in [[parsers]] property.
+     * If no parsers are configured for the current [[contentType]] it uses the PHP function `mb_parse_str()`
+     * to parse the [[rawBody|request body]].
+     * 
+     * @todo   Cache
+     * @return array the request parameters given in the request body.
+     */
+    public function getBodyParams()
+    {
+        mb_parse_str($this->getRawBody(), $bodyParams);
+
+        return $bodyParams;
+    }
+
+    /**
      * Alias of getRawBody()
      */
     public function input()
     {
-        return $this->getRawBody();
+        return $this->getBodyParams();
     }
     
     /**
