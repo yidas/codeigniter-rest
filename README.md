@@ -105,14 +105,34 @@ CONFIGURATION
 class ApiController extends yidas\rest\Controller {}
 ```
 
-2. Add a pair of routes for this controller into `\application\config\routes.php` to enable RESTful API methods:
+2. Add and implement action methods referring by [Build Methods](#build-methods).
+
+Then you could access RESTful API:
+
+```
+https://yourname.com/resources/ajax
+https://yourname.com/resources/ajax/123
+```
+
+> `resources` is Controller name
+
+### Routes Setting
+
+If you want to define controller as resource for URI, for example:
+
+```
+https://yourname.com/resources
+https://yourname.com/resources/123
+```
+
+You could add a pair of routes for this controller into `\application\config\routes.php` to enable RESTful API methods:
 
 ```php
 $route['resource_name'] = '[Controller]/route';
 $route['resource_name/(:num)'] = '[Controller]/route/$1';
 ```
 
-> You could skip this route setting if you just use `index` method of the controller.
+> You don't need set routes if you just use `index` method of the controller.
 
 ---
 
@@ -131,11 +151,11 @@ The base RESTful API controller is `yidas\rest\Controller`, the following table 
 |DELETE     |/photos        |delete   |Delete the entire collection.                  |
 
 
-### Overrided Methods:
+### Build Methods:
 
 You could make a resource controller by referring the [Template of Resource Controller](https://github.com/yidas/codeigniter-rest/blob/dev/examples/RestController.php).
 
-The following methods with arguments could be overrided when you need to defind response and open it:
+The following methods with arguments could be add when you need to defind response and open it:
 
 ```php
 public function index() {}
@@ -148,6 +168,39 @@ protected function delete($resourceID=null) {}
 > `$requestData` is the raw body from request
 > 
 > `$resourceID` is the addressed identity of the resource from request
+
+### Custom Routes & Methods
+
+The default routing methods are below setting:
+
+```php
+protected $routes = [
+    'index' => 'index',
+    'store' => 'store',
+    'show' => 'show',
+    'update' => 'update',
+    'delete' => 'delete',
+];
+```
+
+You could override to defind your own routing while creating a resource controller:
+
+```php
+class ApiController extends yidas\rest\Controller {
+
+    protected $routes = [
+        'index' => '_list',
+        'store' => 'save',
+        'show' => 'display',
+        'update' => 'edit',
+        'delete' => 'destory',
+    ];
+}
+```
+
+> The keys are refered to Action of Resource Controller table. 
+>
+> For example: REST list `index` action will run `_list` method.
 
 
 ### Usage

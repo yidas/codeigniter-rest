@@ -106,7 +106,7 @@ class Controller extends \CI_Controller
         switch ($this->request->getMethod()) {
             case 'POST':
                 if (!$resourceID) {
-                    return $this->_action(['delete', $this->request->getBodyParams()]);
+                    return $this->_action(['store', $this->request->getBodyParams()]);
                 }
                 break;
             case 'PUT':
