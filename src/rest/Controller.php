@@ -112,7 +112,7 @@ class Controller extends \CI_Controller
             case 'PUT':
             case 'PATCH':
                 if ($resourceID) {
-                    return $this->_action(['update', $this->request->getBodyParams(), $resourceID]);
+                    return $this->_action(['update', $resourceID, $this->request->getBodyParams()]);
                 }
                 break;
             case 'DELETE':
