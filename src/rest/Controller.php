@@ -9,7 +9,7 @@ use yidas\http\Response;
  * RESTful API Controller
  * 
  * @author  Nick Tsai <myintaer@gmail.com>
- * @version 1.1.0
+ * @version 1.1.2
  * @link    https://github.com/yidas/codeigniter-rest/
  * @see     https://github.com/yidas/codeigniter-rest/blob/master/examples/RestController.php
  * 
@@ -144,13 +144,13 @@ class Controller extends \CI_Controller
     /**
      * Output by JSON format with optinal body format
      * 
-     * @param array|mixed Callback data body
+     * @param array|mixed Callback data body, false will remove body key
      * @param bool Enable body format
      * @param int Callback status code
      * @param string Callback status text
      * @return string Response body data
      */
-    protected function json($data, $bodyFormat=null, $statusCode=null, $statusText=null)
+    protected function json($data=[], $bodyFormat=null, $statusCode=null, $statusText=null)
     {
         $this->response->setFormat(Response::FORMAT_JSON);
 
@@ -160,6 +160,9 @@ class Controller extends \CI_Controller
         if ($bodyFormat) {
             // Pack data
             $data = $this->_format($statusCode, $statusText, $data);
+        } else {
+            // JSON standard of RFC4627
+            $data = is_array($data) ? $data : [$data];
         }
         
         return $this->response
