@@ -9,7 +9,7 @@ use yidas\http\Response;
  * RESTful API Controller
  * 
  * @author  Nick Tsai <myintaer@gmail.com>
- * @version 1.1.4
+ * @version 1.1.5
  * @link    https://github.com/yidas/codeigniter-rest/
  * @see     https://github.com/yidas/codeigniter-rest/blob/master/examples/RestController.php
  * 
@@ -152,8 +152,6 @@ class Controller extends \CI_Controller
      */
     protected function json($data=[], $bodyFormat=null, $statusCode=null, $statusText=null)
     {
-        $this->response->setFormat(Response::FORMAT_JSON);
-
         // Check default Body Format setting if not assigning
         $bodyFormat = ($bodyFormat!==null) ? $bodyFormat : $this->bodyFormat;
         
@@ -165,14 +163,7 @@ class Controller extends \CI_Controller
             $data = is_array($data) ? $data : [$data];
         }
 
-        // Set Status Code
-        if ($statusCode) {
-            $this->response->setStatusCode($statusCode);
-        }
-        
-        return $this->response
-            ->setData($data)
-            ->send();
+        return $this->response->json($data, $statusCode);
     }
 
     /**

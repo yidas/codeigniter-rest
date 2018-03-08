@@ -179,4 +179,24 @@ class Response
     {
         return json_encode($data);
     }
+
+    /**
+     * JSON output shortcut
+     * 
+     * @param array|mixed Callback data body, false will remove body key
+     * @param int Callback status code
+     * @param string Callback status text
+     * @return string Response body data
+     */
+    public function json($data, $statusCode=null, $statusText=null)
+    {
+        // Set Status Code
+        if ($statusCode) {
+            $this->setStatusCode($statusCode, $statusText);
+        }
+        
+        return $this->setFormat(Response::FORMAT_JSON)
+            ->setData($data)
+            ->send();
+    }
 }
