@@ -9,7 +9,7 @@ use yidas\http\Response;
  * RESTful API Controller
  * 
  * @author  Nick Tsai <myintaer@gmail.com>
- * @version 1.1.3
+ * @version 1.1.4
  * @link    https://github.com/yidas/codeigniter-rest/
  * @see     https://github.com/yidas/codeigniter-rest/blob/master/examples/RestController.php
  * 
@@ -163,6 +163,11 @@ class Controller extends \CI_Controller
         } else {
             // JSON standard of RFC4627
             $data = is_array($data) ? $data : [$data];
+        }
+
+        // Set Status Code
+        if ($statusCode) {
+            $this->response->setStatusCode($statusCode);
         }
         
         return $this->response
