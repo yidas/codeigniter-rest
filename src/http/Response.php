@@ -8,7 +8,7 @@ use Exception;
  * Response Component based on CI_Output
  * 
  * @author  Nick Tsai <myintaer@gmail.com>
- * @since   0.1.0
+ * @since   0.2.0
  * @example
  *  $response = new yidas\http\Response;
  *  $response->format = yidas\http\Response::FORMAT_JSON;
@@ -134,21 +134,29 @@ class Response
      * Sets the response status code.
      * This method will set the corresponding status text if `$text` is null.
      * @param int $code the status code
-     * @param string $text the status text. If not set, it will be set automatically based on the status code.
+     * @param string $text HTTP status text base on PHP http_response_code().
      * @throws Exception if the status code is invalid.
      * @return $this the response object itself
      */
-    public function setStatusCode($code, $text = null)
+    public function setStatusCode($code, $text=null)
     {
         if ($code === null) {
             $code = 200;
         }
+        // Save code into property
         $this->_statusCode = (int) $code;
+        // Check status code
         if ($this->getIsInvalid()) {
-            throw new Exception("The HTTP status code is invalid: $code");
+            throw new Exception("The HTTP status code is invalid: ". $this->_statusCode);
         }
-        // Set into CI_Output
-        $this->ci->output->set_status_header($code, $text);
+        // Set HTTP status code with options
+        if ($text) {
+            // Set into CI_Output
+            $this->ci->output->set_status_header($this->_statusCode, $text);
+        } else {
+            // Use PHP function with more code support
+            http_response_code($this->_statusCode);
+        }
 
         return $this;
     }
