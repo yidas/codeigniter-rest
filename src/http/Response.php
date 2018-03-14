@@ -11,9 +11,9 @@ use Exception;
  * @since   0.2.0
  * @example
  *  $response = new yidas\http\Response;
- *  $response->format = yidas\http\Response::FORMAT_JSON;
- *  $response->data = ['foo'=>'bar'];
- *  // $response->setStatusCode(200);
+ *  $response->setFormat(yidas\http\Response::FORMAT_JSON);
+ *  $response->setData(['foo'=>'bar']);
+ *  $response->setStatusCode(201, 'Created');
  *  $response->send();
  * @todo    Formatters
  */
@@ -35,7 +35,11 @@ class Response
      * @var array the formatters that are supported by default
      */
     public $contentTypes = [
-        self::FORMAT_JSON => 'application/json;',
+        self::FORMAT_RAW => 'text/plain;',
+        self::FORMAT_HTML => 'text/html;',
+        self::FORMAT_JSON => 'application/json;', // RFC 4627
+        self::FORMAT_JSONP => 'application/javascript;', // RFC 4329
+        self::FORMAT_XML => 'application/xml;', // RFC 2376
     ];
     /**
      * @var string the response format. This determines how to convert [[data]] into [[content]]
@@ -90,21 +94,14 @@ class Response
     /**
      * Set Response Data into CI_Output
      * 
+     * @todo    Format data before send
      * @param mixed Response data
      * @return object self
      */
     public function setData($data)
     {
-        $formatFunc = $this->_format. "Format";
-        // Use formatter if exists
-        if (method_exists($this, $formatFunc)) {
-            
-            $data = $this->{$formatFunc}($data);
-        } 
-        elseif (is_array($data)) {
-            // Prevent error if is array data for deafult
-            $data = json_encode($data);
-        }
+        // Format data
+        $data = $this->format($data, $this->_format);
         // CI Output
         $this->ci->output->set_output($data);
 
@@ -181,9 +178,35 @@ class Response
     /**
      * Common format funciton by format types. {FORMAT}Format()
      * 
-     * @param array Pre-handle array data
+     * @param array  Pre-handle array data
+     * @param string Format
+     * @return string Formatted data by specified formatter
      */
-    public static function jsonFormat($data)
+    public function format($data, $format)
+    {
+        // Case handing. ex. json => Json
+        $format = ucfirst(strtolower($format));
+        $formatFunc = "format" . $format;
+        // Use formatter if exists
+        if (method_exists($this, $formatFunc)) {
+            
+            $data = $this->{$formatFunc}($data);
+        } 
+        elseif (is_array($data)) {
+            // Use JSON while the Formatter not found and the data is array
+            $data = $this->formatJson($data);
+        }
+
+        return $data;
+    }
+
+    /**
+     * Common format funciton by format types. {FORMAT}Format()
+     * 
+     * @param array Pre-handle array data
+     * @return string Formatted data
+     */
+    public static function formatJson($data)
     {
         return json_encode($data);
     }
