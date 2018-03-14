@@ -216,14 +216,13 @@ class Response
      * 
      * @param array|mixed Callback data body, false will remove body key
      * @param int Callback status code
-     * @param string Callback status text
      * @return string Response body data
      */
-    public function json($data, $statusCode=null, $statusText=null)
+    public function json($data, $statusCode=null)
     {
         // Set Status Code
         if ($statusCode) {
-            $this->setStatusCode($statusCode, $statusText);
+            $this->setStatusCode($statusCode);
         }
         
         return $this->setFormat(Response::FORMAT_JSON)

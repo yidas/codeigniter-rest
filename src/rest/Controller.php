@@ -31,7 +31,7 @@ class Controller extends \CI_Controller
      */
     protected $responseFormat = [
         'status_code' => 'code',
-        'status_text' => 'message',
+        'message' => 'message',
         'body' => 'data',
     ];
 
@@ -146,18 +146,21 @@ class Controller extends \CI_Controller
      * 
      * @param array|mixed Callback data body, false will remove body key
      * @param bool Enable body format
-     * @param int Callback status code
-     * @param string Callback status text
+     * @param int HTTP Status Code
+     * @param string Callback message
      * @return string Response body data
+     * 
+     * @example
+     *  json(false, true, 401, 'Login Required', 'Unauthorized');
      */
-    protected function json($data=[], $bodyFormat=null, $statusCode=null, $statusText=null)
+    protected function json($data=[], $bodyFormat=null, $statusCode=null, $message=null)
     {
         // Check default Body Format setting if not assigning
         $bodyFormat = ($bodyFormat!==null) ? $bodyFormat : $this->bodyFormat;
         
         if ($bodyFormat) {
             // Pack data
-            $data = $this->_format($statusCode, $statusText, $data);
+            $data = $this->_format($statusCode, $message, $data);
         } else {
             // JSON standard of RFC4627
             $data = is_array($data) ? $data : [$data];
@@ -174,19 +177,15 @@ class Controller extends \CI_Controller
      * @param array|mixed|bool Callback data body, false will remove body key 
      * @return array Formated array data
      */
-    protected function _format($statusCode=null, $statusText=null, $body=false)
+    protected function _format($statusCode=null, $message=null, $body=false)
     {
         $format = [];
-        // Status Code setting
-        if ($statusCode) {
-            $this->response->setStatusCode($statusCode);
-        }
         // Status Code field is necessary
         $format[$this->responseFormat['status_code']] = ($statusCode) 
             ?: $this->response->getStatusCode();
-        // Status Text field
-        if ($statusText) {
-            $format[$this->responseFormat['status_text']] = $statusText;
+        // Message field
+        if ($message) {
+            $format[$this->responseFormat['message']] = $message;
         }
         // Body field
         if ($body !== false) {
