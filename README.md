@@ -189,7 +189,7 @@ You could override to defind your own routing while creating a resource controll
 class ApiController extends yidas\rest\Controller {
 
     protected $routes = [
-        'index' => '_list',
+        'index' => 'find',
         'store' => 'save',
         'show' => 'display',
         'update' => 'edit',
@@ -198,9 +198,9 @@ class ApiController extends yidas\rest\Controller {
 }
 ```
 
-> The keys are refered to Action of Resource Controller table. 
+> The keys are refered to Action of Resource Controller table, you must to defind all routes you need. 
 >
-> For example: REST list `index` action will run `_list` method.
+> For example: REST list `index` action will run `find` method.
 
 
 ### Usage
