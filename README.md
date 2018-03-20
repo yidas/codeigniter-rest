@@ -198,7 +198,7 @@ class ApiController extends yidas\rest\Controller {
 }
 ```
 
-> The keys are refered to Action of Resource Controller table, you must to defind all routes you need. 
+> The keys are refered to Action of Resource Controller table, you must define all routes you need. 
 >
 > For example: REST list `index` action will run `find` method.
 
