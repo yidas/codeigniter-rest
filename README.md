@@ -23,49 +23,52 @@ class ApiController extends yidas\rest\Controller
 {
     public function index()
     {
-        return $this->json(['bar'=>'foo']);
+        return $this->response->json(['bar'=>'foo']);
     }
 }
 ```
 
-Output:
+Output with status `200 OK`:
 
 ```json
 {"bar":"foo"}
 ```
 
-### Body Formatter
+### RESTful Create Callback
+
+```php
+public function store($resourceID, $requestData=null) {
+
+    $this->db->insert('mytable', $requestData);
+    $id = $this->db->insert_id();
+    
+    return $this->response->json(['id'=>$id], 201);
+}
+```
+
+Output with status `201 Created`:
+
+```json
+{"id":1}
+```
+
+### Packed Standard Format
 
 ```php
 try {
     throw new Exception("API forbidden", 403);
 } catch (\Exception $e) {
-    return $this->json(['bar'=>'foo'], true, $e->getCode(), $e->getMessage());
+    // Pack data into a standard format
+    $data = $this->pack(['bar'=>'foo'], $e->getCode(), $e->getMessage());
+    return $this->response->json($data, $e->getCode());
 }
 
 ```
 
-Output:
+Output with status `403 Forbidden`:
 
 ```json
 {"code":403,"message":"API forbidden","data":{"bar":"foo"}}
-```
-
-### Update Example
-
-```php
-public function update($resourceID, $requestData=null) {
-
-    $this->db->where('id', $resourceID)
-        ->update('table', $requestData);
-    return $this->json(false, true);
-}
-```
-
-Output:
-
-```json
-{"code":200}
 ```
 
 ---
@@ -102,7 +105,7 @@ CONFIGURATION
 1. Create a controller to extend `yidas\rest\Controller`, 
 
 ```php
-class ApiController extends yidas\rest\Controller {}
+class ResourceController extends yidas\rest\Controller {}
 ```
 
 2. Add and implement action methods referring by [Build Methods](#build-methods).
@@ -189,7 +192,7 @@ You could override to defind your own routing while creating a resource controll
 class ApiController extends yidas\rest\Controller {
 
     protected $routes = [
-        'index' => '_list',
+        'index' => 'find',
         'store' => 'save',
         'show' => 'display',
         'update' => 'edit',
@@ -198,27 +201,34 @@ class ApiController extends yidas\rest\Controller {
 }
 ```
 
-> The keys are refered to Action of Resource Controller table. 
+> The keys are refered to Action of Resource Controller table, you must define all routes you need. 
 >
-> For example: REST list `index` action will run `_list` method.
+> For example: REST list `index` action will run `find` method.
 
 
 ### Usage
 
-#### json()
+#### `pack()`
 
-Output by JSON format with optinal body format
+Pack array data into body format
 
-|Item|Type|Description|
-|-|-|-|
-|param|array\|mixed |Callback data body|
-|param| bool |Enable body format|
-|param| int |Callback status code|
-|param| string |Callback status text|
-|return |string| Response body data|
+You could override this method for your application standard.
 
 ```php
-return $this->json(["bar"=>"foo"], true);
+$data = $this->pack(['bar'=>'foo'], 403, 'Forbidden');
+return $this->response->json($data, 403);
+```
+
+JSON Result:
+
+```
+{
+    "code": 403,
+    "message": "Forbidden",
+    "data": {
+        "bar": "foo"
+    }
+}
 ```
 
 ---
@@ -230,13 +240,13 @@ The PSR-7 request component `yidas\http\request` is loaded with `yidas\rest\Cont
 
 ### Usage
 
-#### getAuthCredentialsWithBasic()
+#### `getAuthCredentialsWithBasic()`
 
 ```php
 list($username, $password) = $this->request->getAuthCredentialsWithBasic();
 ```
 
-#### getAuthCredentialsWithBearer()
+#### `getAuthCredentialsWithBearer()`
 
 ```php
 $b64token = $this->request->getAuthCredentialsWithBearer();
@@ -251,19 +261,27 @@ The PSR-7 response component `yidas\http\response` is loaded with `yidas\rest\Co
 
 ### Usage
 
-#### setFormat()
+#### `json()`
+
+JSON output shortcut
+
+```php
+$this->response->json(['bar'=>'foo'], 201);
+```
+
+#### `setFormat()`
 
 ```php
 $this->response->setFormat(\yidas\http\Response::FORMAT_JSON);
 ```
 
-#### setData()
+#### `setData()`
 
 ```php
 $this->response->setData(['foo'=>'bar']);
 ```
 
-#### send()
+#### `send()`
 
 ```php
 $this->response->send();
