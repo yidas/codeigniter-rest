@@ -23,12 +23,24 @@ class ApiController extends yidas\rest\Controller
 {
     public function index()
     {
-        return $this->json(['bar'=>'foo']);
+        return $this->response->json(['bar'=>'foo']);
     }
 }
 ```
 
-Output:
+Output with status `200 OK`:
+
+```json
+{"bar":"foo"}
+```
+
+### HTTP Status Code
+
+```php
+return $this->response->json(['bar'=>'foo'], 403);
+```
+
+Output with status `403 Forbidden`:
 
 ```json
 {"bar":"foo"}
