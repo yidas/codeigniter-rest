@@ -204,11 +204,6 @@ class Controller extends \CI_Controller
     {
         $packBody = [];
 
-        // Data
-        if (is_array($data) || is_string($data)) {
-            
-            $packBody['data'] = $data;
-        }
         // Status Code
         if ($statusCode) {
             
@@ -218,6 +213,11 @@ class Controller extends \CI_Controller
         if ($message) {
             
             $packBody['message'] = $message;
+        }
+        // Data
+        if (is_array($data) || is_string($data)) {
+            
+            $packBody['data'] = $data;
         }
         
         return $packBody;
