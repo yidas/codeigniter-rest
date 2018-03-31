@@ -225,8 +225,12 @@ class Response
             $this->setStatusCode($statusCode);
         }
         
-        return $this->setFormat(Response::FORMAT_JSON)
-            ->setData($data)
-            ->send();
+        $this->setFormat(Response::FORMAT_JSON);
+
+        if (!is_null($data)) {
+            $this->setData($data);
+        }
+        
+        return $this->send();
     }
 }

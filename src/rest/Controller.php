@@ -9,7 +9,7 @@ use yidas\http\Response;
  * RESTful API Controller
  * 
  * @author  Nick Tsai <myintaer@gmail.com>
- * @version 1.2.0
+ * @version 1.3.0
  * @link    https://github.com/yidas/codeigniter-rest/
  * @see     https://github.com/yidas/codeigniter-rest/blob/master/examples/RestController.php
  * 
@@ -26,15 +26,6 @@ use yidas\http\Response;
  */
 class Controller extends \CI_Controller
 {
-    /**
-     * @var array Standard format
-     */
-    protected $responseFormat = [
-        'status_code' => 'code',
-        'message' => 'message',
-        'body' => 'data',
-    ];
-
     /**
      * RESTful API resource routes
      * 
@@ -144,6 +135,7 @@ class Controller extends \CI_Controller
     /**
      * Output by JSON format with optinal body format
      * 
+     * @deprecated 1.3.0
      * @param array|mixed Callback data body, false will remove body key
      * @param bool Enable body format
      * @param int HTTP Status Code
@@ -172,6 +164,7 @@ class Controller extends \CI_Controller
     /**
      * Format Response Data
      * 
+     * @deprecated 1.3.0
      * @param int Callback status code
      * @param string Callback status text
      * @param array|mixed|bool Callback data body, false will remove body key 
@@ -193,6 +186,41 @@ class Controller extends \CI_Controller
         }
         
         return $format;
+    }
+
+    /**
+     * Pack array data into body format
+     * 
+     * You could override this method for your application standard
+     * 
+     * @param array|string $data Original data
+     * @param int HTTP Status Code
+     * @param string Callback message
+     * @return array Packed data
+     * @example
+     *  $packedData = pack(['bar'=>'foo], 401, 'Login Required');
+     */
+    protected function pack($data, $statusCode=200, $message=null)
+    {
+        $packBody = [];
+
+        // Status Code
+        if ($statusCode) {
+            
+            $packBody['code'] = $statusCode;
+        }
+        // Message
+        if ($message) {
+            
+            $packBody['message'] = $message;
+        }
+        // Data
+        if (is_array($data) || is_string($data)) {
+            
+            $packBody['data'] = $data;
+        }
+        
+        return $packBody;
     }
 
     /**
