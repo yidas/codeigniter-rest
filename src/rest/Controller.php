@@ -9,7 +9,7 @@ use yidas\http\Response;
  * RESTful API Controller
  * 
  * @author  Nick Tsai <myintaer@gmail.com>
- * @version 1.3.0
+ * @version 1.3.1
  * @link    https://github.com/yidas/codeigniter-rest/
  * @see     https://github.com/yidas/codeigniter-rest/blob/master/examples/RestController.php
  * 
@@ -174,15 +174,15 @@ class Controller extends \CI_Controller
     {
         $format = [];
         // Status Code field is necessary
-        $format[$this->responseFormat['status_code']] = ($statusCode) 
+        $format['code'] = ($statusCode) 
             ?: $this->response->getStatusCode();
         // Message field
         if ($message) {
-            $format[$this->responseFormat['message']] = $message;
+            $format['message'] = $message;
         }
         // Body field
         if ($body !== false) {
-            $format[$this->responseFormat['body']] = $body;
+            $format['data'] = $body;
         }
         
         return $format;
