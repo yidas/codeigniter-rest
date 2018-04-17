@@ -12,6 +12,27 @@ CodeIgniter 3 RESTful API Controller
 [![Latest Unstable Version](https://poser.pugx.org/yidas/codeigniter-rest/v/unstable?format=flat-square)](https://packagist.org/packages/yidas/codeigniter-rest)
 [![License](https://poser.pugx.org/yidas/codeigniter-rest/license?format=flat-square)](https://packagist.org/packages/yidas/codeigniter-rest)
 
+---
+
+OUTLINE
+-------
+
+- [Demonstration](#demonstration)
+    - [RESTful Create Callback](#restful-create-callback)
+    - [Packed Standard Format](#packed-standard-format)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Configuration](#configuration)
+    - [Routes Setting](#routes-setting)
+- [Resource Controllers](#resource-controllers)
+    - [Build Methods](#build-methods)
+    - [Custom Routes & Methods](#custom-routes--methods)
+    - [Usage](#usage)
+- [HTTP Request](#http-request)
+    - [Usage](#usage-1)
+- [HTTP Response](#http-response)
+    - [Usage](#usage-2)
+- [Reference](#reference)
 
 ---
 
@@ -37,7 +58,7 @@ Output with status `200 OK`:
 ### RESTful Create Callback
 
 ```php
-public function store($resourceID, $requestData=null) {
+public function store($requestData=null) {
 
     $this->db->insert('mytable', $requestData);
     $id = $this->db->insert_id();
@@ -113,52 +134,59 @@ class ResourceController extends yidas\rest\Controller {}
 Then you could access RESTful API:
 
 ```
+https://yourname.com/resources/api
+https://yourname.com/resources/api/123
+```
+
+You could also use `/ajax` instead of `/api` if you like:
+
+```
 https://yourname.com/resources/ajax
 https://yourname.com/resources/ajax/123
 ```
 
-> `resources` is Controller name
+> `resources` is Controller name, if you don't want to have `/api` or `/ajax` in URI you could set Routes Setting as below.
 
 ### Routes Setting
 
-If you want to define controller as resource for URI, for example:
+If you want to have the standard RESTful URI pattern, which defines controller as resource for URI, for example:
 
 ```
 https://yourname.com/resources
 https://yourname.com/resources/123
 ```
 
-You could add a pair of routes for this controller into `\application\config\routes.php` to enable RESTful API methods:
+You could add a pair of routes for this controller into `\application\config\routes.php` to enable RESTful API url:
 
 ```php
 $route['resource_name'] = '[Controller]/route';
 $route['resource_name/(:num)'] = '[Controller]/route/$1';
 ```
 
-> You don't need set routes if you just use `index` method of the controller.
-
 ---
 
 RESOURCE CONTROLLERS
 --------------------
  
-The base RESTful API controller is `yidas\rest\Controller`, the following table is the actions handled by resource controller, the `action` is the `CI_Controller`'s action name which you could override to open it:
+The base RESTful API controller is `yidas\rest\Controller`, the following table is the actions handled by resource controller, the `action` refers to `CI_Controller`'s action name which you could override:
 
-|HTTP Method|URI            |Action   |Description                                    |
-|:----------|:--------------|:--------|:----------------------------------------------|
-|GET        |/photos        |index    |List the collection's members.                 |
-|POST       |/photos        |store    |Create a new entry in the collection.          |
-|GET        |/photos/{photo}|show     |Retrieve an addressed member of the collection.|
-|PUT/PATCH  |/photos/{photo}|update   |Update the addressed member of the collection. |
-|DELETE     |/photos/{photo}|delete   |Delete the addressed member of the collection. |
-|DELETE     |/photos        |delete   |Delete the entire collection.                  |
+|HTTP Method|URI (Routes Setting) |Action   |Description                                    |
+|:----------|:--------------------|:--------|:----------------------------------------------|
+|GET        |/photos              |index    |List the collection's members.                 |
+|POST       |/photos              |store    |Create a new entry in the collection.          |
+|GET        |/photos/{photo}      |show     |Retrieve an addressed member of the collection.|
+|PUT/PATCH  |/photos/{photo}      |update   |Update the addressed member of the collection. |
+|DELETE     |/photos/{photo}      |delete   |Delete the addressed member of the collection. |
+|DELETE     |/photos              |delete   |Delete the entire collection.                  |
+
+> Without Routes Setting, the URI is like `/photos/ajax` & `/photos/ajax/{photo}`.
 
 
 ### Build Methods:
 
 You could make a resource controller by referring the [Template of Resource Controller](https://github.com/yidas/codeigniter-rest/blob/dev/examples/RestController.php).
 
-The following methods with arguments could be add when you need to defind response and open it:
+The following RESTful controller methods could be add by your need. which each method refers to the action of Resource Controller table by default, and injects required arguments:
 
 ```php
 public function index() {}
@@ -168,13 +196,13 @@ protected function update($resourceID, $requestData=null) {}
 protected function delete($resourceID=null) {}
 ```
 
-> `$requestData` is the raw body from request
+> `$requestData` (array) is the raw body from request
 > 
-> `$resourceID` is the addressed identity of the resource from request
+> `$resourceID` (string) is the addressed identity of the resource from request
 
 ### Custom Routes & Methods
 
-The default routing methods are below setting:
+The default routes for mapping the same action methods of Resource Controller are below:
 
 ```php
 protected $routes = [
@@ -186,7 +214,7 @@ protected $routes = [
 ];
 ```
 
-You could override to defind your own routing while creating a resource controller:
+You could override it to define your own routes while creating a resource controller:
 
 ```php
 class ApiController extends yidas\rest\Controller {
@@ -201,19 +229,24 @@ class ApiController extends yidas\rest\Controller {
 }
 ```
 
-> The keys are refered to Action of Resource Controller table, you must define all routes you need. 
->
-> For example: REST list `index` action will run `find` method.
+After reseting routes, each RESTful method (key) would enter into specified controller action (value). For above example, while access `/resources/ajax/` url with `GET` method would enter into `find()` action. However, the default route would enter into `index()` action.
+
+> The keys refer to the actions of Resource Controller table, you must define all methods you need. 
 
 
 ### Usage
 
-#### `pack()`
+#### pack()
 
 Pack array data into body format
 
 You could override this method for your application standard.
 
+```php
+protected array pack(array|mixed $data, integer $statusCode=200, string $message=null)
+````
+
+*Example:*
 ```php
 $data = $this->pack(['bar'=>'foo'], 403, 'Forbidden');
 return $this->response->json($data, 403);
@@ -240,14 +273,28 @@ The PSR-7 request component `yidas\http\request` is loaded with `yidas\rest\Cont
 
 ### Usage
 
-#### `getAuthCredentialsWithBasic()`
+#### getAuthCredentialsWithBasic()
 
+Get Credentials with HTTP Basic Authentication 
+
+```php
+public array getAuthCredentialsWithBasic()
+```
+
+*Example:*
 ```php
 list($username, $password) = $this->request->getAuthCredentialsWithBasic();
 ```
 
-#### `getAuthCredentialsWithBearer()`
+#### getAuthCredentialsWithBearer()
 
+Get Credentials with OAuth 2.0 Authorization Framework: Bearer Token Usage
+
+```php
+public string getAuthCredentialsWithBearer()
+```
+
+*Example:*
 ```php
 $b64token = $this->request->getAuthCredentialsWithBearer();
 ```
@@ -261,28 +308,54 @@ The PSR-7 response component `yidas\http\response` is loaded with `yidas\rest\Co
 
 ### Usage
 
-#### `json()`
+#### json()
 
 JSON output shortcut
 
 ```php
+public void json(array|mixed $data, integer $statusCode=null)
+```
+
+*Example:*
+```php
 $this->response->json(['bar'=>'foo'], 201);
 ```
 
-#### `setFormat()`
+#### setFormat()
 
+Set Response Format into CI_Output
+
+```php
+public self setFormat(string $format)
+```
+
+*Example:*
 ```php
 $this->response->setFormat(\yidas\http\Response::FORMAT_JSON);
 ```
 
-#### `setData()`
+#### setData()
 
+Set Response Data into CI_Output
+
+```php
+public self setData(mixed $data)
+```
+
+*Example:*
 ```php
 $this->response->setData(['foo'=>'bar']);
 ```
 
-#### `send()`
+#### send()
 
+Sends the response to the client.
+
+```php
+public void send()
+```
+
+*Example:*
 ```php
 $this->response->send();
 ```

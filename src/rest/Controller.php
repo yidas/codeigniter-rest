@@ -90,6 +90,9 @@ class Controller extends \CI_Controller
      * 
      * For Codeigniter route setting to implement RESTful API
      * 
+     * Without routes setting, `resource/{route-alias}` URI pattern is a limitation which CI3 would 
+     * first map `controller/action` URI into action() instead of index($action)
+     * 
      * @param int|string Resource ID
      */
     public function route($resourceID=NULL)
@@ -126,6 +129,18 @@ class Controller extends \CI_Controller
 
     /**
      * Alias of route()
+     *
+     * `resource/api` URI pattern
+     */
+    public function api($resourceID=NULL)
+    {
+        return $this->route($resourceID);
+    }
+
+    /**
+     * Alias of route()
+     *
+     * `resource/ajax` URI pattern
      */
     public function ajax($resourceID=NULL)
     {
@@ -193,7 +208,7 @@ class Controller extends \CI_Controller
      * 
      * You could override this method for your application standard
      * 
-     * @param array|string $data Original data
+     * @param array|mixed $data Original data
      * @param int HTTP Status Code
      * @param string Callback message
      * @return array Packed data
