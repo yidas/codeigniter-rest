@@ -9,7 +9,7 @@ use yidas\http\Response;
  * RESTful API Controller
  * 
  * @author  Nick Tsai <myintaer@gmail.com>
- * @version 1.3.1
+ * @version 1.4.0
  * @link    https://github.com/yidas/codeigniter-rest/
  * @see     https://github.com/yidas/codeigniter-rest/blob/master/examples/RestController.php
  * 
