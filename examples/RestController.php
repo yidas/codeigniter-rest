@@ -29,12 +29,13 @@ class RestController extends \yidas\rest\Controller
      * @param int|string $resourceID
      * @param array $requestData
      */
-    protected function update($resourceID, $requestData=null) {}
+    protected function update($resourceID=null, $requestData=null) {}
 
     /**
      * Action: Delete
      * 
-     * @param int|string $resourceID
+     * @param int|string $resourceID Support single resource delete
+     * @param array $requestData Support delete parameters
      */
-    protected function delete($resourceID) {}    
+    protected function delete($resourceID=null, $requestData=null) {}    
 }

@@ -12,6 +12,7 @@ use yidas\http\Response;
  * @version 1.4.0
  * @link    https://github.com/yidas/codeigniter-rest/
  * @see     https://github.com/yidas/codeigniter-rest/blob/master/examples/RestController.php
+ * @see     https://en.wikipedia.org/wiki/Representational_state_transfer#Relationship_between_URL_and_HTTP_methods
  * 
  * Controller extending:
  * ```php
@@ -103,18 +104,16 @@ class Controller extends \CI_Controller
                     return $this->_action(['store', $this->request->getBodyParams()]);
                 }
                 break;
-            case 'PUT':
             case 'PATCH':
-                if ($resourceID) {
-                    return $this->_action(['update', $resourceID, $this->request->getBodyParams()]);
+                // PATCH could only allow single element
+                if (!$resourceID) {
+                    return $this->_defaultAction();
                 }
+            case 'PUT':
+                return $this->_action(['update', $resourceID, $this->request->getBodyParams()]);
                 break;
             case 'DELETE':
-                if ($resourceID) {
-                    return $this->_action(['delete', $resourceID]);
-                } else {
-                    return $this->_action(['delete']);
-                }
+                return $this->_action(['delete', $resourceID, $this->request->getBodyParams()]);
                 break;
             case 'GET':
             default:

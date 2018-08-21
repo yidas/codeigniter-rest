@@ -192,8 +192,8 @@ The following RESTful controller methods could be add by your need. which each m
 public function index() {}
 protected function store($requestData=null) {}
 protected function show($resourceID) {}
-protected function update($resourceID, $requestData=null) {}
-protected function delete($resourceID=null) {}
+protected function update($resourceID=null, $requestData=null) {}
+protected function delete($resourceID=null, $requestData=null) {}
 ```
 
 > `$requestData` (array) is the raw body from request
@@ -370,4 +370,6 @@ REFERENCE
 - [RFC7617 - The 'Basic' HTTP Authentication Scheme](https://tools.ietf.org/html/rfc7617)
 
 - [RFC6750 - The OAuth 2.0 Authorization Framework: Bearer Token Usage](https://tools.ietf.org/html/rfc6750)
+
+- [REST Relationship between URL and HTTP methods](https://en.wikipedia.org/wiki/Representational_state_transfer#Relationship_between_URL_and_HTTP_methods)
 
