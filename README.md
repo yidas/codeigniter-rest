@@ -12,6 +12,17 @@ CodeIgniter 3 RESTful API Controller
 [![Latest Unstable Version](https://poser.pugx.org/yidas/codeigniter-rest/v/unstable?format=flat-square)](https://packagist.org/packages/yidas/codeigniter-rest)
 [![License](https://poser.pugx.org/yidas/codeigniter-rest/license?format=flat-square)](https://packagist.org/packages/yidas/codeigniter-rest)
 
+This RESTful API extension is collected into [yidas/codeigniter-pack](https://github.com/yidas/codeigniter-pack) which is a complete solution for Codeigniter framework.
+
+Features
+--------
+
+- ***PSR-7** standardization*
+
+- ***RESTful API** implementation*
+
+- ***Laravel Resource Controllers** pattern like* 
+
 ---
 
 OUTLINE
@@ -27,6 +38,7 @@ OUTLINE
 - [Resource Controllers](#resource-controllers)
     - [Build Methods](#build-methods)
     - [Custom Routes & Methods](#custom-routes--methods)
+    - [Behaviors](#behaviors)
     - [Usage](#usage)
 - [HTTP Request](#http-request)
     - [Usage](#usage-1)
@@ -176,10 +188,11 @@ The base RESTful API controller is `yidas\rest\Controller`, the following table 
 |POST       |/photos              |store    |Create a new entry in the collection.          |
 |GET        |/photos/{photo}      |show     |Retrieve an addressed member of the collection.|
 |PUT/PATCH  |/photos/{photo}      |update   |Update the addressed member of the collection. |
+|PUT        |/photos              |update   |Update the entire collection.                  |
 |DELETE     |/photos/{photo}      |delete   |Delete the addressed member of the collection. |
 |DELETE     |/photos              |delete   |Delete the entire collection.                  |
 
-> Without Routes Setting, the URI is like `/photos/ajax` & `/photos/ajax/{photo}`.
+> Without Routes Setting, the URI is like `/photos/api` & `/photos/api/{photo}`.
 
 
 ### Build Methods:
@@ -196,7 +209,7 @@ protected function update($resourceID=null, $requestData=null) {}
 protected function delete($resourceID=null, $requestData=null) {}
 ```
 
-> `$requestData` (array) is the raw body from request
+> `$requestData` (array) is the array input data parsed from request raw body
 > 
 > `$resourceID` (string) is the addressed identity of the resource from request
 
@@ -229,10 +242,47 @@ class ApiController extends yidas\rest\Controller {
 }
 ```
 
-After reseting routes, each RESTful method (key) would enter into specified controller action (value). For above example, while access `/resources/ajax/` url with `GET` method would enter into `find()` action. However, the default route would enter into `index()` action.
+After reseting routes, each RESTful method (key) would enter into specified controller action (value). For above example, while access `/resources/api/` url with `GET` method would enter into `find()` action. However, the default route would enter into `index()` action.
 
 > The keys refer to the actions of Resource Controller table, you must define all methods you need. 
 
+### Behaviors
+
+Resource Controller supports behaviors setting for each action, you could implement such as authentication for different permissions.
+
+#### _setBehavior()
+
+Set behavior to a action before route
+
+```php
+protected boolean _setBehavior(string $action, callable $function)
+```
+
+*Example:*
+```php
+class BaseRestController extends \yidas\rest\Controller
+{
+    function __construct() 
+    {
+        parent::__construct();
+    
+        // Load your Auth library for verification
+        $this->load->library('Auth');
+        $this->auth->verify('read');
+        
+        // Set each action for own permission verification
+        $this->_setBehavior('store', function() {
+            $this->auth->verify('create');
+        });
+        $this->_setBehavior('update', function() {
+            $this->auth->verify('update');
+        });
+        $this->_setBehavior('delete', function() {
+            $this->auth->verify('delete');
+        });
+    }
+    // ...
+```
 
 ### Usage
 
