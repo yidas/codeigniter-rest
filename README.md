@@ -176,6 +176,7 @@ The base RESTful API controller is `yidas\rest\Controller`, the following table 
 |POST       |/photos              |store    |Create a new entry in the collection.          |
 |GET        |/photos/{photo}      |show     |Retrieve an addressed member of the collection.|
 |PUT/PATCH  |/photos/{photo}      |update   |Update the addressed member of the collection. |
+|PUT        |/photos              |update   |Update the entire collection.                  |
 |DELETE     |/photos/{photo}      |delete   |Delete the addressed member of the collection. |
 |DELETE     |/photos              |delete   |Delete the entire collection.                  |
 
