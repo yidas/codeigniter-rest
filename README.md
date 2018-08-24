@@ -197,7 +197,7 @@ protected function update($resourceID=null, $requestData=null) {}
 protected function delete($resourceID=null, $requestData=null) {}
 ```
 
-> `$requestData` (array) is the raw body from request
+> `$requestData` (array) is the array input data parsed from request raw body
 > 
 > `$resourceID` (string) is the addressed identity of the resource from request
 
