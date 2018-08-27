@@ -14,6 +14,15 @@ CodeIgniter 3 RESTful API Controller
 
 This RESTful API extension is collected into [yidas/codeigniter-pack](https://github.com/yidas/codeigniter-pack) which is a complete solution for Codeigniter framework.
 
+Features
+--------
+
+- ***PSR-7** standardization*
+
+- ***RESTful API** implementation*
+
+- ***Laravel Resource Controllers** pattern like* 
+
 ---
 
 OUTLINE
