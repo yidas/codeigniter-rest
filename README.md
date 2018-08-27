@@ -191,7 +191,7 @@ The base RESTful API controller is `yidas\rest\Controller`, the following table 
 |DELETE     |/photos/{photo}      |delete   |Delete the addressed member of the collection. |
 |DELETE     |/photos              |delete   |Delete the entire collection.                  |
 
-> Without Routes Setting, the URI is like `/photos/ajax` & `/photos/ajax/{photo}`.
+> Without Routes Setting, the URI is like `/photos/api` & `/photos/api/{photo}`.
 
 
 ### Build Methods:
