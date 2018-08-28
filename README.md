@@ -38,6 +38,7 @@ OUTLINE
 - [Resource Controllers](#resource-controllers)
     - [Build Methods](#build-methods)
     - [Custom Routes & Methods](#custom-routes--methods)
+    - [Behaviors](#behaviors)
     - [Usage](#usage)
 - [HTTP Request](#http-request)
     - [Usage](#usage-1)
