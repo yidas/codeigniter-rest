@@ -241,10 +241,47 @@ class ApiController extends yidas\rest\Controller {
 }
 ```
 
-After reseting routes, each RESTful method (key) would enter into specified controller action (value). For above example, while access `/resources/ajax/` url with `GET` method would enter into `find()` action. However, the default route would enter into `index()` action.
+After reseting routes, each RESTful method (key) would enter into specified controller action (value). For above example, while access `/resources/api/` url with `GET` method would enter into `find()` action. However, the default route would enter into `index()` action.
 
 > The keys refer to the actions of Resource Controller table, you must define all methods you need. 
 
+### Behaviors
+
+Resource Controller supports behaviors setting for each action, you could implement such as authentication for different permissions.
+
+#### _setBehavior()
+
+Set behavior to a action before route
+
+```php
+protected boolean _setBehavior(string $action, callable $function)
+```
+
+*Example:*
+```php
+class BaseRestController extends \yidas\rest\Controller
+{
+    function __construct() 
+    {
+        parent::__construct();
+    
+        // Load your Auth library for verification
+        $this->load->library('Auth');
+        $this->auth->verify('read');
+        
+        // Set each action for own permission verification
+        $this->_setBehavior('store', function(){
+            $this->auth->verify('create');
+        });
+        $this->_setBehavior('update', function(){
+            $this->auth->verify('update');
+        });
+        $this->_setBehavior('delete', function(){
+            $this->auth->verify('delete');
+        });
+    }
+    // ...
+```
 
 ### Usage
 
