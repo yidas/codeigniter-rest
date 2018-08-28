@@ -271,13 +271,13 @@ class BaseRestController extends \yidas\rest\Controller
         $this->auth->verify('read');
         
         // Set each action for own permission verification
-        $this->_setBehavior('store', function(){
+        $this->_setBehavior('store', function() {
             $this->auth->verify('create');
         });
-        $this->_setBehavior('update', function(){
+        $this->_setBehavior('update', function() {
             $this->auth->verify('update');
         });
-        $this->_setBehavior('delete', function(){
+        $this->_setBehavior('delete', function() {
             $this->auth->verify('delete');
         });
     }
