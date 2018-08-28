@@ -47,6 +47,19 @@ class Controller extends \CI_Controller
     ];
 
     /**
+     * Behaviors of actions
+     *
+     * @var array
+     */
+    private $behaviors = [
+        'index' => null,
+        'store' => null,
+        'show' => null,
+        'update' => null,
+        'delete' => null,
+    ];
+
+    /**
      * Pre-setting format
      * 
      * @var string yidas\http\Response format
@@ -69,7 +82,6 @@ class Controller extends \CI_Controller
      * @var object yidas\http\Response;
      */
     protected $response;
-    
     
     function __construct() 
     {
@@ -251,6 +263,24 @@ class Controller extends \CI_Controller
     }
 
     /**
+     * Set behavior to a action before route
+     *
+     * @param String $action
+     * @param Callable $function
+     * @return boolean Result
+     */
+    protected function _setBehavior($action, Callable $function)
+    {
+        if (array_key_exists($action, $this->behaviors)) {
+
+            $this->behaviors[$action] = $function;
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Action processor for route
      * 
      * @param array Elements contains method for first and params for others 
@@ -259,6 +289,11 @@ class Controller extends \CI_Controller
     {
         // Shift and get the method
         $method = array_shift($params);
+
+        // Behavior
+        if ($this->behaviors[$method]) {
+            $this->behaviors[$method]();
+        }
 
         if (!isset($this->routes[$method])) {
             $this->_defaultAction();
