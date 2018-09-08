@@ -410,6 +410,22 @@ public void send()
 $this->response->send();
 ```
 
+#### withAddedHeader()
+
+Return an instance with the specified header appended with the given value.
+
+```php
+public self withAddedHeader(string $name, string $value)
+```
+
+*Example:*
+```php
+return $this->response
+    ->withAddedHeader('Access-Control-Allow-Origin', '*')
+    ->withAddedHeader('X-Frame-Options', 'deny')
+    ->json(['bar'=>'foo']);
+```
+
 ---
 
 REFERENCE
