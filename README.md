@@ -6,7 +6,7 @@
     <br>
 </p>
 
-CodeIgniter 3 RESTful API Controller
+CodeIgniter 3 RESTful API Resource Base Controller
 
 [![Latest Stable Version](https://poser.pugx.org/yidas/codeigniter-rest/v/stable?format=flat-square)](https://packagist.org/packages/yidas/codeigniter-rest)
 [![Latest Unstable Version](https://poser.pugx.org/yidas/codeigniter-rest/v/unstable?format=flat-square)](https://packagist.org/packages/yidas/codeigniter-rest)
@@ -323,6 +323,14 @@ The PSR-7 request component `yidas\http\request` is loaded with `yidas\rest\Cont
 
 ### Usage
 
+#### getRawBody()
+
+Returns the raw HTTP request body
+
+```php
+public string getRawBody()
+```
+
 #### getAuthCredentialsWithBasic()
 
 Get Credentials with HTTP Basic Authentication 
@@ -439,3 +447,4 @@ REFERENCE
 
 - [REST Relationship between URL and HTTP methods](https://en.wikipedia.org/wiki/Representational_state_transfer#Relationship_between_URL_and_HTTP_methods)
 
+- [PSR-7: HTTP message interfaces](https://www.php-fig.org/psr/psr-7/)
