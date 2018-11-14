@@ -118,7 +118,7 @@ class Request
         
         if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
 
-            if (strpos(strtolower($_SERVER['HTTP_AUTHORIZATION']), 'Bearer ')===0) {
+            if (strpos(strtolower($_SERVER['HTTP_AUTHORIZATION']), 'bearer ')===0) {
 
                 $b64token = substr($_SERVER['HTTP_AUTHORIZATION'], 7);
             }
