@@ -138,7 +138,7 @@ CONFIGURATION
 1. Create a controller to extend `yidas\rest\Controller`, 
 
 ```php
-class ResourceController extends yidas\rest\Controller {}
+class Resource extends yidas\rest\Controller {}
 ```
 
 2. Add and implement action methods referring by [Build Methods](#build-methods).
@@ -146,26 +146,26 @@ class ResourceController extends yidas\rest\Controller {}
 Then you could access RESTful API:
 
 ```
-https://yourname.com/resources/api
-https://yourname.com/resources/api/123
+https://yourname.com/resource/api
+https://yourname.com/resource/api/123
 ```
 
 You could also use `/ajax` instead of `/api` if you like:
 
 ```
-https://yourname.com/resources/ajax
-https://yourname.com/resources/ajax/123
+https://yourname.com/resource/ajax
+https://yourname.com/resource/ajax/123
 ```
 
-> `resources` is Controller name, if you don't want to have `/api` or `/ajax` in URI you could set Routes Setting as below.
+> `resource` is Controller name, if you don't want to have `/api` or `/ajax` in URI you could set Routes Setting as below.
 
 ### Routes Setting
 
 If you want to have the standard RESTful URI pattern, which defines controller as resource for URI, for example:
 
 ```
-https://yourname.com/resources
-https://yourname.com/resources/123
+https://yourname.com/resource
+https://yourname.com/resource/123
 ```
 
 You could add a pair of routes for this controller into `\application\config\routes.php` to enable RESTful API url:
@@ -209,9 +209,9 @@ protected function update($resourceID=null, $requestData=null) {}
 protected function delete($resourceID=null, $requestData=null) {}
 ```
 
-> `$requestData` (array) is the array input data parsed from request raw body
-> 
 > `$resourceID` (string) is the addressed identity of the resource from request
+>
+> `$requestData` (array) is the array input data parsed from request raw body, which supports `x-www-form-urlencoded` request content type. (Alternatively, use [`this->request->getRawBody()`](#getrawbody) to get raw data)
 
 ### Custom Routes & Methods
 
@@ -319,7 +319,7 @@ JSON Result:
 HTTP REQUEST
 ------------
 
-The PSR-7 request component `yidas\http\request` is loaded with `yidas\rest\Controller`, which provides input handler and HTTP Authentication.
+The PSR-7 request component `yidas\http\request` is preloaded into `yidas\rest\Controller`, which provides input handler and HTTP Authentication. You could call it by `$this->request` in controller class.
 
 ### Usage
 
@@ -329,6 +329,12 @@ Returns the raw HTTP request body
 
 ```php
 public string getRawBody()
+```
+
+*Example:*
+```php
+// Request with `application/json` raw
+$data = json_decode($this->request->getRawBody);
 ```
 
 #### getAuthCredentialsWithBasic()
@@ -362,7 +368,7 @@ $b64token = $this->request->getAuthCredentialsWithBearer();
 HTTP RESPONSE
 -------------
 
-The PSR-7 response component `yidas\http\response` is loaded with `yidas\rest\Controller`, which provides output handler and formatter.
+The PSR-7 response component `yidas\http\response` is preloaded into `yidas\rest\Controller`, which provides output handler and formatter. You could call it by `$this->response` in controller class.
 
 ### Usage
 
@@ -445,6 +451,6 @@ REFERENCE
 
 - [RFC6750 - The OAuth 2.0 Authorization Framework: Bearer Token Usage](https://tools.ietf.org/html/rfc6750)
 
-- [REST Relationship between URL and HTTP methods](https://en.wikipedia.org/wiki/Representational_state_transfer#Relationship_between_URL_and_HTTP_methods)
+- [REST Relationship between URL and HTTP methods](https://en.wikipedia.org/wiki/Representational_state_transfer#Relationship_between_URI_and_HTTP_methods)
 
 - [PSR-7: HTTP message interfaces](https://www.php-fig.org/psr/psr-7/)
