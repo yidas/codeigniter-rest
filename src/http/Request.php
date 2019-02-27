@@ -6,15 +6,20 @@ namespace yidas\http;
  * Request Component
  * 
  * @author  Nick Tsai <myintaer@gmail.com>
- * @since   1.1.0
+ * @since   1.7.0
  * @todo    Psr\Http\Message\RequestInterface
  */
 class Request
 {
     /**
-     * @var array raw HTTP request body
+     * @var string raw HTTP request body
      */
     private $_rawBody;
+
+    /**
+     * @var array Body params
+     */
+    private $_bodyParams;
     
     /**
      * Retrieves the HTTP method of the request.
@@ -33,6 +38,22 @@ class Request
     }
 
     /**
+     * Returns request content-type
+     * The Content-Type header field indicates the MIME type of the data
+     * contained in [[getRawBody()]] or, in the case of the HEAD method, the
+     * media type that would have been sent had the request been a GET.
+     * For the MIME-types the user expects in response, see [[acceptableContentTypes]].
+     * 
+     * @return string request content-type. Null is returned if this information is not available.
+     * @link https://tools.ietf.org/html/rfc2616#section-14.17
+     * HTTP 1.1 header field definitions
+     */
+    public function getContentType()
+    {
+        return isset($_SERVER['CONTENT_TYPE']) ? $_SERVER['CONTENT_TYPE'] : null;
+    }
+
+    /**
      * Returns the raw HTTP request body.
      * @return string the request body
      */
@@ -47,7 +68,7 @@ class Request
     /**
      * Returns the request parameters given in the request body.
      *
-     * Request parameters are determined using the parsers configured in [[parsers]] property.
+     * Request parameters are determined using the parsers depended on [[contentType]].
      * If no parsers are configured for the current [[contentType]] it uses the PHP function `mb_parse_str()`
      * to parse the [[rawBody|request body]].
      * 
@@ -56,9 +77,23 @@ class Request
      */
     public function getBodyParams()
     {
-        mb_parse_str($this->getRawBody(), $bodyParams);
+        if ($this->_bodyParams === null) {
+        
+            $contentType = $this->getContentType();
 
-        return $bodyParams;
+            if (strcasecmp($contentType, 'application/json') == 0) {
+                // JSON content type
+                $this->_bodyParams = json_decode($this->getRawBody(), true);
+            } elseif ($this->getMethod() === 'POST') {
+                // PHP has already parsed the body so we have all params in $_POST
+                $this->_bodyParams = $_POST;
+            } else {
+                $this->_bodyParams = [];
+                mb_parse_str($this->getRawBody(), $this->_bodyParams);
+            }
+        }
+
+        return $this->_bodyParams;
     }
 
     /**
