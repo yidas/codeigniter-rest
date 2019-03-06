@@ -211,7 +211,7 @@ protected function delete($resourceID=null, $requestData=null) {}
 
 > `$resourceID` (string) is the addressed identity of the resource from request
 >
-> `$requestData` (array) is the array input data parsed from request raw body, which supports data  of common content types. (Alternatively, use [`this->request->getRawBody()`](#getrawbody) to get raw data)
+> `$requestData` (array) is the array input data parsed from request raw body, which supports data format of common content types. (Alternatively, use [`this->request->getRawBody()`](#getrawbody) to get raw data)
 
 ### Custom Routes & Methods
 
