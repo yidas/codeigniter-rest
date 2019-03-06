@@ -1,6 +1,6 @@
 <p align="center">
     <a href="https://codeigniter.com/" target="_blank">
-        <img src="https://codeigniter.com/assets/images/ci-logo-big.png" height="100px">
+        <img src="https://camo.githubusercontent.com/b1df5003f5bc21277aeb87c5d3558242b74eb54a61a253cc061a38c7a43bcac7/68747470733a2f2f75706c6f61642e77696b696d656469612e6f72672f77696b6970656469612f7a682f372f37632f436f646549676e697465722e706e67" height="">
     </a>
     <h1 align="center">CodeIgniter RESTful API</h1>
     <br>
@@ -9,7 +9,6 @@
 CodeIgniter 3 RESTful API Resource Base Controller
 
 [![Latest Stable Version](https://poser.pugx.org/yidas/codeigniter-rest/v/stable?format=flat-square)](https://packagist.org/packages/yidas/codeigniter-rest)
-[![Latest Unstable Version](https://poser.pugx.org/yidas/codeigniter-rest/v/unstable?format=flat-square)](https://packagist.org/packages/yidas/codeigniter-rest)
 [![License](https://poser.pugx.org/yidas/codeigniter-rest/license?format=flat-square)](https://packagist.org/packages/yidas/codeigniter-rest)
 
 This RESTful API extension is collected into [yidas/codeigniter-pack](https://github.com/yidas/codeigniter-pack) which is a complete solution for Codeigniter framework.
@@ -161,7 +160,7 @@ https://yourname.com/resource/ajax/123
 
 ### Routes Setting
 
-If you want to have the standard RESTful URI pattern, which defines controller as resource for URI, for example:
+If you want to have a standard RESTful URI pattern that controller defines as a URI resource, for example:
 
 ```
 https://yourname.com/resource
@@ -172,7 +171,7 @@ You could add a pair of routes for this controller into `\application\config\rou
 
 ```php
 $route['resource_name'] = '[Controller]/route';
-$route['resource_name/(:num)'] = '[Controller]/route/$1';
+$route['resource_name/(:any)'] = '[Controller]/route/$1';
 ```
 
 ---
@@ -211,7 +210,7 @@ protected function delete($resourceID=null, $requestData=null) {}
 
 > `$resourceID` (string) is the addressed identity of the resource from request
 >
-> `$requestData` (array) is the array input data parsed from request raw body, which supports `x-www-form-urlencoded` request content type. (Alternatively, use [`this->request->getRawBody()`](#getrawbody) to get raw data)
+> `$requestData` (array) is the array input data parsed from request raw body, which supports data format of common content types. (Alternatively, use [`this->request->getRawBody()`](#getrawbody) to get raw data)
 
 ### Custom Routes & Methods
 
