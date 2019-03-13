@@ -160,7 +160,7 @@ https://yourname.com/resource/ajax/123
 
 ### Routes Setting
 
-If you want to have the standard RESTful URI pattern, which defines controller as resource for URI, for example:
+If you want to have a standard RESTful URI pattern that controller defines as a URI resource, for example:
 
 ```
 https://yourname.com/resource
@@ -171,7 +171,7 @@ You could add a pair of routes for this controller into `\application\config\rou
 
 ```php
 $route['resource_name'] = '[Controller]/route';
-$route['resource_name/(:num)'] = '[Controller]/route/$1';
+$route['resource_name/(:segment)'] = '[Controller]/route/$1';
 ```
 
 ---
