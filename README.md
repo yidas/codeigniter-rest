@@ -171,7 +171,7 @@ You could add a pair of routes for this controller into `\application\config\rou
 
 ```php
 $route['resource_name'] = '[Controller]/route';
-$route['resource_name/(:segment)'] = '[Controller]/route/$1';
+$route['resource_name/(:any)'] = '[Controller]/route/$1';
 ```
 
 ---
