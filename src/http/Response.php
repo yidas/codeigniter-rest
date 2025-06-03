@@ -8,7 +8,7 @@ use Exception;
  * Response Component based on CI_Output
  * 
  * @author  Nick Tsai <myintaer@gmail.com>
- * @since   1.6.1
+ * @since   1.7.1
  * @example
  *  $response = new yidas\http\Response;
  *  $response->setFormat(yidas\http\Response::FORMAT_JSON);
