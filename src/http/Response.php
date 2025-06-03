@@ -35,11 +35,11 @@ class Response
      * @var array the formatters that are supported by default
      */
     public $contentTypes = [
-        self::FORMAT_RAW => 'text/plain;',
-        self::FORMAT_HTML => 'text/html;',
-        self::FORMAT_JSON => 'application/json;', // RFC 4627
-        self::FORMAT_JSONP => 'application/javascript;', // RFC 4329
-        self::FORMAT_XML => 'application/xml;', // RFC 2376
+        self::FORMAT_RAW => 'text/plain',
+        self::FORMAT_HTML => 'text/html',
+        self::FORMAT_JSON => 'application/json', // RFC 4627
+        self::FORMAT_JSONP => 'application/javascript', // RFC 4329
+        self::FORMAT_XML => 'application/xml', // RFC 2376
     ];
     /**
      * @var string the response format. This determines how to convert [[data]] into [[content]]
